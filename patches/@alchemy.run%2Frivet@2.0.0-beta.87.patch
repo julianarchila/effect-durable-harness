@@ -1,0 +1,461 @@
+diff --git a/lib/Docker/SwarmControlPlane.js b/lib/Docker/SwarmControlPlane.js
+index 0873691b75f8aeed79f1aa19a1031c4e7c926637..09c13e11eb09ac0f04b88f15002ff40f06689e95 100644
+--- a/lib/Docker/SwarmControlPlane.js
++++ b/lib/Docker/SwarmControlPlane.js
+@@ -55,7 +55,7 @@ export const SwarmControlPlane = (id, props = {}) => Layer.effect(Cluster, Effec
+             RIVET__OBJECT_STORAGE__PRIMARY__FILE_SYSTEM__PATH: "/var/lib/rivet/objects",
+             RIVET__TELEMETRY__ENABLED: "false",
+         },
+-        ports: [{ external: port, internal: 6420 }],
++        ports: [{ external: port, internal: 6420, mode: "host" }],
+         volumes: [{ hostPath: data.name, containerPath: "/var/lib/rivet" }],
+         networks: [{ name: network.name, aliases: ["rivet-engine"] }],
+         replicas: 1,
+diff --git a/lib/DurableObjectState.d.ts b/lib/DurableObjectState.d.ts
+index 71319a1d8c8f7cd45d67296469c56df838446405..5ef670632e44c7299948f20b2f3e54a1a0410bd7 100644
+--- a/lib/DurableObjectState.d.ts
++++ b/lib/DurableObjectState.d.ts
+@@ -21,6 +21,8 @@ export interface ActorContextLike {
+     waitUntil(promise: Promise<unknown>): void;
+     /** Keep the actor awake until `promise` settles. */
+     keepAwake<T>(promise: Promise<T>): Promise<T>;
++    /** Stop the actor gracefully; the next call starts a fresh activation. */
++    sleep?(): void;
+ }
+ /** An actor's raw SQLite database, or a transaction on it. @internal */
+ export interface ActorDatabase {
+@@ -123,6 +125,20 @@ export interface DurableObjectStateShape {
+      * `tag`, only those accepted with it.
+      */
+     getWebSockets(tag?: string): Effect.Effect<ReadonlyArray<WebSocket>>;
++    /**
++     * Reset the instance, as Cloudflare's `state.abort` does: its in-memory
++     * work ends (`onStop`), calls that arrive meanwhile fail, and the actor
++     * stops; the next call starts a fresh instance, which reads its storage.
++     */
++    abort(reason?: string): Effect.Effect<void>;
++    /**
++     * Run `effect` when this activation stops: the actor goes to sleep, is
++     * destroyed, or is aborted. RivetKit keeps the node's process, so work the
++     * instance started in memory (a background loop, an open session) has to
++     * end here; the next activation starts from storage. Cloudflare evicts the
++     * isolate instead, which needs no hook.
++     */
++    onStop<R>(effect: Effect.Effect<void, never, R>): Effect.Effect<void, never, R>;
+ }
+ declare const DurableObjectState_base: Context.ServiceClass<DurableObjectState, "Rivet.DurableObjectState", DurableObjectStateShape>;
+ /** The running Durable Object instance's state. */
+@@ -133,7 +149,7 @@ export declare const ALARM_ACTION = "__alchemy_alarm";
+ /** Create Alchemy's storage tables. Run from the actor's database migration. @internal */
+ export declare const migrateStorage: (db: ActorContextLike["db"]) => Promise<void>;
+ /** Build the state for one actor activation. @internal */
+-export declare const makeDurableObjectState: (c: ActorContextLike, activation: Activation, sockets: SocketRegistry) => DurableObjectStateShape;
++export declare const makeDurableObjectState: (c: ActorContextLike, activation: Activation, sockets: SocketRegistry, lifecycle?: ActivationLifecycle) => DurableObjectStateShape;
+ /**
+  * Run the handler of the alarm that fired with `token`, if it's still the
+  * one set. A handler that fails is retried, as on Cloudflare: up to six
+@@ -141,5 +157,23 @@ export declare const makeDurableObjectState: (c: ActorContextLike, activation: A
+  * one since, unless it set a new alarm itself. @internal
+  */
+ export declare const runFiredAlarm: (c: ActorContextLike, token: unknown, handler: Effect.Effect<void, unknown> | undefined) => Effect.Effect<void, never, never>;
++/**
++ * What one actor activation holds besides its instance and sockets: the
++ * handlers to run when it stops, and how to reset it. @internal
++ */
++export interface ActivationLifecycle {
++    readonly stops: Array<() => Promise<void>>;
++    abort: (reason: string) => void;
++}
++/** @internal */
++export declare const makeActivationLifecycle: () => ActivationLifecycle;
++/** Run the activation's stop handlers, once. @internal */
++export declare const runStops: (lifecycle: ActivationLifecycle) => Promise<void>;
++/**
++ * Schedule an alarm a transaction recorded but whose RivetKit schedule was
++ * never made: the activation that committed it stopped first. Runs when an
++ * activation starts. @internal
++ */
++export declare const repairAlarm: (c: ActorContextLike) => Effect.Effect<void, never, never>;
+ export {};
+ //# sourceMappingURL=DurableObjectState.d.ts.map
+\ No newline at end of file
+diff --git a/lib/DurableObjectState.js b/lib/DurableObjectState.js
+index 9cc24979d9376dce0734b7df57981387c3652200..0796dc1b7c59094eee45f10a3f7670267e3bb944 100644
+--- a/lib/DurableObjectState.js
++++ b/lib/DurableObjectState.js
+@@ -125,7 +125,7 @@ const setAlarm = (c, at, retries) => Effect.gen(function* () {
+     }));
+ });
+ /** Build the state for one actor activation. @internal */
+-export const makeDurableObjectState = (c, activation, sockets) => {
++export const makeDurableObjectState = (c, activation, sockets, lifecycle = makeActivationLifecycle()) => {
+     const name = c.key[0] ?? "";
+     const ops = {
+         get: (key) => query(c, `SELECT value FROM ${KV_TABLE} WHERE key = ?`, key).pipe(Effect.flatMap((rows) => rows[0] === undefined ? Effect.undefined : decode(rows[0].value))),
+@@ -232,6 +232,10 @@ export const makeDurableObjectState = (c, activation, sockets) => {
+         id: { name, toString: () => name },
+         storage,
+         getWebSockets: (tag) => Effect.sync(() => sockets.all(tag)),
++        abort: (reason) => Effect.sync(() => lifecycle.abort(reason ?? "aborted")),
++        onStop: (effect) => Effect.contextWith((context) => Effect.sync(() => {
++            lifecycle.stops.push(() => Effect.runPromiseWith(context)(effect.pipe(Effect.catchCause((cause) => Effect.logError("Durable Object stop handler failed", cause)))));
++        })),
+         // As on Cloudflare: the work runs with the caller's context and a scope
+         // of its own, and the call's scope stays open until it settles.
+         waitUntil: (effect) => Effect.gen(function* () {
+@@ -290,4 +294,27 @@ export const runFiredAlarm = (c, token, handler) => Effect.gen(function* () {
+         yield* setAlarm(c, now + ALARM_RETRY_DELAY * 2 ** retries, retries + 1);
+     }));
+ });
++/** @internal */
++export const makeActivationLifecycle = () => ({
++    stops: [],
++    abort: () => { },
++});
++/** Run the activation's stop handlers, once. @internal */
++export const runStops = async (lifecycle) => {
++    const stops = lifecycle.stops.splice(0);
++    await Promise.all(stops.map((stop) => stop()));
++};
++// ─── Alarm repair ──────────────────────────────────────────────────────────
++/**
++ * Schedule an alarm a transaction recorded but whose RivetKit schedule was
++ * never made: the activation that committed it stopped first. Runs when an
++ * activation starts. @internal
++ */
++export const repairAlarm = (c) => Effect.gen(function* () {
++    const alarm = yield* readAlarm(c);
++    if (alarm === undefined || alarm.id !== undefined)
++        return;
++    yield* Effect.logWarning("Durable Object alarm was recorded but never scheduled; scheduling it now");
++    yield* setAlarm(c, alarm.at, alarm.retries);
++});
+ //# sourceMappingURL=DurableObjectState.js.map
+\ No newline at end of file
+diff --git a/lib/internal/Runtime.js b/lib/internal/Runtime.js
+index 06301c6c66b387654d0cf324bad7d5f64f6ed49c..7338cac4009381bdcde6a26b1d32a582d559f7c5 100644
+--- a/lib/internal/Runtime.js
++++ b/lib/internal/Runtime.js
+@@ -8,7 +8,7 @@ import * as HttpServerRequest from "effect/http/HttpServerRequest";
+ import * as HttpServerResponse from "effect/http/HttpServerResponse";
+ import * as Option from "effect/Option";
+ import * as Stream from "effect/Stream";
+-import { ALARM_ACTION, DurableObjectState, makeDurableObjectState, migrateStorage, runFiredAlarm, } from "../DurableObjectState.js";
++import { ALARM_ACTION, DurableObjectState, makeActivationLifecycle, makeDurableObjectState, migrateStorage, repairAlarm, runFiredAlarm, runStops, } from "../DurableObjectState.js";
+ import { AWAITING_HEADER, Awaiting, DEADLOCK_STATUS, isDeadlock, makeActivation, receive, waitingSection, } from "./Calls.js";
+ import { makeSocketRegistry, PendingWebSocket, } from "./Sockets.js";
+ /** Read a RivetKit setting the pool put in the node's environment. */
+@@ -132,12 +132,25 @@ export const runDurableObjects = (durableObjects) => Effect.gen(function* () {
+                 const sockets = makeSocketRegistry();
+                 c.vars.activation = activation;
+                 c.vars.sockets = sockets;
++                const lifecycle = c.vars.lifecycle;
++                lifecycle.abort = (reason) => {
++                    if (c.vars.aborted !== undefined)
++                        return;
++                    c.vars.aborted = reason;
++                    console.error(`Rivet Durable Object '${name}' aborted: ${reason}`);
++                    // The instance's in-memory work ends now; the actor stops, and the
++                    // next call starts a fresh activation from storage.
++                    void runStops(lifecycle).finally(() => c.sleep?.());
++                };
++                // An alarm a stopped activation recorded but never scheduled is
++                // scheduled before the instance is built.
++                const ready = Effect.runPromise(repairAlarm(c).pipe(Effect.catchCause((cause) => Effect.logError("Durable Object alarm repair failed", cause))));
+                 instance = makeDurableObjectInstance({
+-                    build: () => Promise.resolve(build),
++                    build: () => ready.then(() => build),
+                     // RivetKit runs an actor's calls concurrently over async
+                     // storage; a class given `Workers.InputGate` gets a gate per
+                     // instance from the bridge.
+-                    services: Context.make(DurableObjectState, makeDurableObjectState(c, activation, sockets)).pipe(
++                    services: Context.make(DurableObjectState, makeDurableObjectState(c, activation, sockets, lifecycle)).pipe(
+                     // Construction runs under the activation's construction
+                     // section; each call replaces it with what it was sent.
+                     Context.add(Awaiting, {
+@@ -158,12 +171,14 @@ export const runDurableObjects = (durableObjects) => Effect.gen(function* () {
+             const activation = c.vars.activation;
+             // Construction has finished once a call starts, or fails.
+             const constructed = () => void activation.open.delete(activation.construction);
+-            const execute = (fn, onExit) => instance
+-                .execute((shape) => {
+-                constructed();
+-                return fn(shape);
+-            }, onExit)
+-                .finally(constructed);
++            const execute = (fn, onExit) => c.vars.aborted !== undefined
++                ? Promise.reject(new Error(`Durable Object aborted: ${c.vars.aborted}`))
++                : instance
++                    .execute((shape) => {
++                    constructed();
++                    return fn(shape);
++                }, onExit)
++                    .finally(constructed);
+             return { instance: { ...instance, execute }, activation, sockets: c.vars.sockets };
+         };
+         use[name] = actor({
+@@ -172,17 +187,29 @@ export const runDurableObjects = (durableObjects) => Effect.gen(function* () {
+                 instance: undefined,
+                 activation: undefined,
+                 sockets: undefined,
++                lifecycle: makeActivationLifecycle(),
++                aborted: undefined,
+             }),
+             onRequest: (c, request) => {
++                if (c.vars.aborted !== undefined) {
++                    return new Response("Service Unavailable: the Durable Object was aborted", {
++                        status: 503,
++                    });
++                }
+                 const { instance, activation } = instanceOf(c);
+                 return handleRequest(instance, activation, request);
+             },
+             // A WebSocket through the gateway: the instance's `fetch` accepts it
+             // with `Rivet.upgrade()`.
+             onWebSocket: (c, ws) => {
++                if (c.vars.aborted !== undefined)
++                    return ws.close(1011, "The Durable Object was aborted");
+                 const { instance, activation, sockets } = instanceOf(c);
+                 return handleWebSocket(instance, activation, sockets, c.request, ws);
+             },
++            // The instance's in-memory work ends with the activation.
++            onSleep: (c) => runStops(c.vars.lifecycle),
++            onDestroy: (c) => runStops(c.vars.lifecycle),
+             actions: {
+                 // RivetKit times an action out after 60 seconds, and an alarm can
+                 // wait out a transaction before its handler runs as long as it
+diff --git a/src/Docker/SwarmControlPlane.ts b/src/Docker/SwarmControlPlane.ts
+index edd6e5ac73bad876a0719323d6202fb5abf04349..1e439c3e609c0be51857b57852c3f977427133d1 100644
+--- a/src/Docker/SwarmControlPlane.ts
++++ b/src/Docker/SwarmControlPlane.ts
+@@ -86,7 +86,7 @@ export const SwarmControlPlane = (
+           RIVET__OBJECT_STORAGE__PRIMARY__FILE_SYSTEM__PATH: "/var/lib/rivet/objects",
+           RIVET__TELEMETRY__ENABLED: "false",
+         },
+-        ports: [{ external: port, internal: 6420 }],
++        ports: [{ external: port, internal: 6420, mode: "host" }],
+         volumes: [{ hostPath: data.name, containerPath: "/var/lib/rivet" }],
+         networks: [{ name: network.name, aliases: ["rivet-engine"] }],
+         replicas: 1,
+diff --git a/src/DurableObjectState.ts b/src/DurableObjectState.ts
+index 05164404f3e9e74f8ad8ed1add7f93d3a56eef16..a9f44d3e411ec233f7275f130811755257b29e72 100644
+--- a/src/DurableObjectState.ts
++++ b/src/DurableObjectState.ts
+@@ -29,6 +29,8 @@ export interface ActorContextLike {
+   waitUntil(promise: Promise<unknown>): void;
+   /** Keep the actor awake until `promise` settles. */
+   keepAwake<T>(promise: Promise<T>): Promise<T>;
++  /** Stop the actor gracefully; the next call starts a fresh activation. */
++  sleep?(): void;
+ }
+ 
+ /** An actor's raw SQLite database, or a transaction on it. @internal */
+@@ -138,6 +140,20 @@ export interface DurableObjectStateShape {
+    * `tag`, only those accepted with it.
+    */
+   getWebSockets(tag?: string): Effect.Effect<ReadonlyArray<WebSocket>>;
++  /**
++   * Reset the instance, as Cloudflare's `state.abort` does: its in-memory
++   * work ends (`onStop`), calls that arrive meanwhile fail, and the actor
++   * stops; the next call starts a fresh instance, which reads its storage.
++   */
++  abort(reason?: string): Effect.Effect<void>;
++  /**
++   * Run `effect` when this activation stops: the actor goes to sleep, is
++   * destroyed, or is aborted. RivetKit keeps the node's process, so work the
++   * instance started in memory (a background loop, an open session) has to
++   * end here; the next activation starts from storage. Cloudflare evicts the
++   * isolate instead, which needs no hook.
++   */
++  onStop<R>(effect: Effect.Effect<void, never, R>): Effect.Effect<void, never, R>;
+ }
+ 
+ /** The running Durable Object instance's state. */
+@@ -340,6 +356,7 @@ export const makeDurableObjectState = (
+   c: ActorContextLike,
+   activation: Activation,
+   sockets: SocketRegistry,
++  lifecycle: ActivationLifecycle = makeActivationLifecycle(),
+ ): DurableObjectStateShape => {
+   const name = c.key[0] ?? "";
+ 
+@@ -499,6 +516,21 @@ export const makeDurableObjectState = (
+     id: { name, toString: () => name },
+     storage,
+     getWebSockets: (tag) => Effect.sync(() => sockets.all(tag)),
++    abort: (reason) => Effect.sync(() => lifecycle.abort(reason ?? "aborted")),
++    onStop: (effect) =>
++      Effect.contextWith((context: Context.Context<never>) =>
++        Effect.sync(() => {
++          lifecycle.stops.push(() =>
++            Effect.runPromiseWith(context)(
++              (effect as Effect.Effect<void>).pipe(
++                Effect.catchCause((cause) =>
++                  Effect.logError("Durable Object stop handler failed", cause),
++                ),
++              ),
++            ),
++          );
++        }),
++      ),
+     // As on Cloudflare: the work runs with the caller's context and a scope
+     // of its own, and the call's scope stays open until it settles.
+     waitUntil: (effect) =>
+@@ -575,3 +607,43 @@ export const runFiredAlarm = (
+       }),
+     );
+   });
++
++// ─── Lifecycle ─────────────────────────────────────────────────────────────
++
++/**
++ * What one actor activation holds besides its instance and sockets: the
++ * handlers to run when it stops, and how to reset it. @internal
++ */
++export interface ActivationLifecycle {
++  readonly stops: Array<() => Promise<void>>;
++  abort: (reason: string) => void;
++}
++
++/** @internal */
++export const makeActivationLifecycle = (): ActivationLifecycle => ({
++  stops: [],
++  abort: () => {},
++});
++
++/** Run the activation's stop handlers, once. @internal */
++export const runStops = async (lifecycle: ActivationLifecycle) => {
++  const stops = lifecycle.stops.splice(0);
++  await Promise.all(stops.map((stop) => stop()));
++};
++
++// ─── Alarm repair ──────────────────────────────────────────────────────────
++
++/**
++ * Schedule an alarm a transaction recorded but whose RivetKit schedule was
++ * never made: the activation that committed it stopped first. Runs when an
++ * activation starts. @internal
++ */
++export const repairAlarm = (c: ActorContextLike) =>
++  Effect.gen(function* () {
++    const alarm = yield* readAlarm(c);
++    if (alarm === undefined || alarm.id !== undefined) return;
++    yield* Effect.logWarning(
++      "Durable Object alarm was recorded but never scheduled; scheduling it now",
++    );
++    yield* setAlarm(c, alarm.at, alarm.retries);
++  });
+diff --git a/src/internal/Runtime.ts b/src/internal/Runtime.ts
+index 442910042d537897c7d57111840c253c1f1a50a8..2d378cfbeb116a471d606765b9fb32199683dfa8 100644
+--- a/src/internal/Runtime.ts
++++ b/src/internal/Runtime.ts
+@@ -25,9 +25,13 @@ import type { HostedDurableObject } from "../DurableObject.ts";
+ import {
+   ALARM_ACTION,
+   DurableObjectState,
++  makeActivationLifecycle,
+   makeDurableObjectState,
+   migrateStorage,
++  repairAlarm,
+   runFiredAlarm,
++  runStops,
++  type ActivationLifecycle,
+   type ActorContextLike,
+ } from "../DurableObjectState.ts";
+ import type { WebSocket } from "../WebSocket.ts";
+@@ -53,6 +57,10 @@ interface ActivationVars {
+   instance: DurableObjectInstance | undefined;
+   activation: Activation | undefined;
+   sockets: SocketRegistry | undefined;
++  /** Stop handlers and how to reset; exists before the instance does. */
++  lifecycle: ActivationLifecycle;
++  /** Why the instance was aborted: every event after it is refused. */
++  aborted: string | undefined;
+ }
+ 
+ type ActivationContext = ActorContextLike & {
+@@ -249,14 +257,32 @@ export const runDurableObjects = (durableObjects: ReadonlyArray<HostedDurableObj
+           const sockets = makeSocketRegistry();
+           c.vars.activation = activation;
+           c.vars.sockets = sockets;
++          const lifecycle = c.vars.lifecycle;
++          lifecycle.abort = (reason) => {
++            if (c.vars.aborted !== undefined) return;
++            c.vars.aborted = reason;
++            console.error(`Rivet Durable Object '${name}' aborted: ${reason}`);
++            // The instance's in-memory work ends now; the actor stops, and the
++            // next call starts a fresh activation from storage.
++            void runStops(lifecycle).finally(() => c.sleep?.());
++          };
++          // An alarm a stopped activation recorded but never scheduled is
++          // scheduled before the instance is built.
++          const ready = Effect.runPromise(
++            repairAlarm(c).pipe(
++              Effect.catchCause((cause) =>
++                Effect.logError("Durable Object alarm repair failed", cause),
++              ),
++            ),
++          );
+           instance = makeDurableObjectInstance({
+-            build: () => Promise.resolve(build),
++            build: () => ready.then(() => build),
+             // RivetKit runs an actor's calls concurrently over async
+             // storage; a class given `Workers.InputGate` gets a gate per
+             // instance from the bridge.
+             services: Context.make(
+               DurableObjectState,
+-              makeDurableObjectState(c, activation, sockets),
++              makeDurableObjectState(c, activation, sockets, lifecycle),
+             ).pipe(
+               // Construction runs under the activation's construction
+               // section; each call replaces it with what it was sent.
+@@ -280,12 +306,14 @@ export const runDurableObjects = (durableObjects: ReadonlyArray<HostedDurableObj
+         // Construction has finished once a call starts, or fails.
+         const constructed = () => void activation.open.delete(activation.construction);
+         const execute: DurableObjectInstance["execute"] = (fn, onExit) =>
+-          instance
+-            .execute((shape) => {
+-              constructed();
+-              return fn(shape);
+-            }, onExit)
+-            .finally(constructed);
++          c.vars.aborted !== undefined
++            ? Promise.reject(new Error(`Durable Object aborted: ${c.vars.aborted}`))
++            : instance
++                .execute((shape) => {
++                  constructed();
++                  return fn(shape);
++                }, onExit)
++                .finally(constructed);
+         return { instance: { ...instance, execute }, activation, sockets: c.vars.sockets! };
+       };
+ 
+@@ -295,17 +323,28 @@ export const runDurableObjects = (durableObjects: ReadonlyArray<HostedDurableObj
+           instance: undefined,
+           activation: undefined,
+           sockets: undefined,
++          lifecycle: makeActivationLifecycle(),
++          aborted: undefined,
+         }),
+         onRequest: (c: ActivationContext, request: Request) => {
++          if (c.vars.aborted !== undefined) {
++            return new Response("Service Unavailable: the Durable Object was aborted", {
++              status: 503,
++            });
++          }
+           const { instance, activation } = instanceOf(c);
+           return handleRequest(instance, activation, request);
+         },
+         // A WebSocket through the gateway: the instance's `fetch` accepts it
+         // with `Rivet.upgrade()`.
+         onWebSocket: (c: ActivationContext, ws: RawWebSocket) => {
++          if (c.vars.aborted !== undefined) return ws.close(1011, "The Durable Object was aborted");
+           const { instance, activation, sockets } = instanceOf(c);
+           return handleWebSocket(instance, activation, sockets, c.request, ws);
+         },
++        // The instance's in-memory work ends with the activation.
++        onSleep: (c: ActivationContext) => runStops(c.vars.lifecycle),
++        onDestroy: (c: ActivationContext) => runStops(c.vars.lifecycle),
+         actions: {
+           // RivetKit times an action out after 60 seconds, and an alarm can
+           // wait out a transaction before its handler runs as long as it

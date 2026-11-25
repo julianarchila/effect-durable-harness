@@ -1,0 +1,82 @@
+{
+  "name": "@effect-durable-harness/host",
+  "version": "0.1.0",
+  "description": "The engine-neutral Durable Object host of @effect-durable-harness/core: the agent inside an Alchemy object, its alarm policy, session socket, views and agent RPC, and the browser clients. Bound to an engine by @effect-durable-harness/cloudflare or @effect-durable-harness/rivet.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/julianarchila/effect-durable-harness.git",
+    "directory": "packages/host"
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "src/**/*.ts"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./react": {
+      "types": "./src/React.ts",
+      "import": "./src/React.ts"
+    },
+    "./*": {
+      "types": "./src/*.ts",
+      "import": "./src/*.ts"
+    },
+    "./internal/*": null
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./react": {
+        "types": "./dist/React.d.ts",
+        "default": "./dist/React.js"
+      },
+      "./*": {
+        "types": "./dist/*.d.ts",
+        "default": "./dist/*.js"
+      },
+      "./internal/*": null
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@effect-durable-harness/core": "workspace:*",
+    "@effect-durable-harness/delta": "workspace:*"
+  },
+  "devDependencies": {
+    "@effect/language-service": "catalog:",
+    "@effect/sql-sqlite-node": "catalog:",
+    "@effect/vitest": "catalog:",
+    "@types/bun": "catalog:",
+    "@types/react": "catalog:",
+    "alchemy": "catalog:",
+    "effect": "catalog:",
+    "react": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "alchemy": "2.0.0-beta.87",
+    "effect": "^4.1.0",
+    "react": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}

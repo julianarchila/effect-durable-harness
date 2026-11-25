@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "composite": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "types": ["bun", "@cloudflare/workers-types"],
+    "module": "Preserve",
+    "moduleResolution": "Bundler"
+  },
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../delta/tsconfig.build.json"
+    },
+    {
+      "path": "../durable/tsconfig.build.json"
+    },
+    {
+      "path": "../host/tsconfig.build.json"
+    }
+  ]
+}

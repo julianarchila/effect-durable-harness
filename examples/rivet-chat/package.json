@@ -1,0 +1,39 @@
+{
+  "name": "@effect-durable-harness/example-rivet-chat",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "alchemy deploy",
+    "destroy": "alchemy destroy",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.web.json"
+  },
+  "dependencies": {
+    "@alchemy.run/cloudflare": "catalog:",
+    "@alchemy.run/domain": "catalog:",
+    "@alchemy.run/fly": "catalog:",
+    "@alchemy.run/frontend-frameworks": "catalog:",
+    "@alchemy.run/rivet": "catalog:",
+    "@effect-durable-harness/cloudflare": "workspace:*",
+    "@effect-durable-harness/core": "workspace:*",
+    "@effect-durable-harness/example-cloudflare-chat": "workspace:*",
+    "@effect-durable-harness/host": "workspace:*",
+    "@effect-durable-harness/opencode": "workspace:*",
+    "@effect-durable-harness/rivet": "workspace:*",
+    "@opencode/ai": "catalog:",
+    "alchemy": "catalog:",
+    "effect": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "catalog:",
+    "@effect/language-service": "catalog:",
+    "@types/bun": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

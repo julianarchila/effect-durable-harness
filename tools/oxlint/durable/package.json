@@ -1,0 +1,18 @@
+{
+  "name": "@effect-durable-harness/oxlint",
+  "version": "0.0.0",
+  "private": true,
+  "description": "effect-durable-harness's own oxlint rules: conventions of this repository, run by `bun run lint`.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@oxlint/plugins": "1.81.0",
+    "oxlint": "1.81.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "@effect-durable-harness/opencode",
+  "version": "0.1.0",
+  "description": "The Models service of @effect-durable-harness/core implemented on @opencode/ai.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/julianarchila/effect-durable-harness.git",
+    "directory": "packages/opencode"
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "src/**/*.ts"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./*": {
+      "types": "./src/*.ts",
+      "import": "./src/*.ts"
+    },
+    "./internal/*": null
+  },
+  "publishConfig": {
+    "exports": {
+      "./*": {
+        "types": "./dist/*.d.ts",
+        "default": "./dist/*.js"
+      },
+      "./internal/*": null
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:live": "vitest run --config vitest.live.config.ts"
+  },
+  "dependencies": {
+    "@effect-durable-harness/core": "workspace:*",
+    "@opencode/ai": "catalog:"
+  },
+  "devDependencies": {
+    "@effect/language-service": "catalog:",
+    "@effect/platform-node": "catalog:",
+    "@effect/vitest": "catalog:",
+    "effect": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "effect": "^4.0.6"
+  }
+}

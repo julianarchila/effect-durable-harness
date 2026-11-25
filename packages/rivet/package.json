@@ -1,0 +1,74 @@
+{
+  "name": "@effect-durable-harness/rivet",
+  "version": "0.1.0",
+  "description": "Rivet Durable Object host of @effect-durable-harness/core: @effect-durable-harness/host bound to Rivet.DurableObjectState, through Alchemy. Experimental.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/julianarchila/effect-durable-harness.git",
+    "directory": "packages/rivet"
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "src/**/*.ts"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./*": {
+      "types": "./src/*.ts",
+      "import": "./src/*.ts"
+    },
+    "./internal/*": null
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./*": {
+        "types": "./dist/*.d.ts",
+        "default": "./dist/*.js"
+      },
+      "./internal/*": null
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "echo 'the Rivet suite needs Docker: bun run test:rivet'",
+    "test:rivet": "RIVET_ENGINE=http://localhost:6420 vitest run --config vitest.rivet.config.ts",
+    "test:rivet:cloud": "RIVET_TARGET=cloud vitest run --config vitest.rivet.config.ts"
+  },
+  "dependencies": {
+    "@effect-durable-harness/core": "workspace:*",
+    "@effect-durable-harness/host": "workspace:*"
+  },
+  "devDependencies": {
+    "@alchemy.run/docker": "catalog:",
+    "@alchemy.run/fly": "catalog:",
+    "@alchemy.run/rivet": "catalog:",
+    "@alchemy.run/test": "catalog:",
+    "@effect-durable-harness/delta": "workspace:*",
+    "@effect/language-service": "catalog:",
+    "@effect/platform-node": "catalog:",
+    "@effect/vitest": "catalog:",
+    "@types/bun": "catalog:",
+    "alchemy": "catalog:",
+    "effect": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "@alchemy.run/rivet": "2.0.0-beta.87",
+    "alchemy": "2.0.0-beta.87",
+    "effect": "^4.1.0"
+  }
+}

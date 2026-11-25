@@ -1,0 +1,498 @@
+{
+  "model": "claude-haiku-5-5",
+  "recordedAt": "2026-10-17T04:22:44.219Z",
+  "transcript": [
+    {
+      "role": "system",
+      "content": "You are a careful assistant. Before answering anything about weather, call get_weather. Think about the answer before replying, then reply in at most two sentences.",
+      "sections": {
+        "units": "<units>Use Celsius.</units>"
+      },
+      "toolsAdded": [
+        {
+          "name": "get_weather",
+          "description": "Current weather for a city: temperature in Celsius and sky.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string",
+                "description": "City name"
+              }
+            },
+            "required": ["city"],
+            "additionalProperties": false
+          }
+        }
+      ],
+      "timestamp": 1
+    },
+    {
+      "role": "user",
+      "content": "I'm in Bogotá at 2,600 m. Is it a good moment for a 10 km run? Weigh the weather against the altitude before you decide.",
+      "timestamp": 2
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "thinking",
+          "thinking": "I need weather info for Bogotá before answering, so I'll call get_weather for that city, then reply in Celsius within two sentences.\n\n",
+          "thinkingSignature": "CAQStwcKEAgSGAI4AUIIdGhpbmtpbmcSDJw9I9aKeF6BtMzGWxoMITmya0Q7/n0HUywUIjAJZr2U/F0MhVKCUHyb3SK8LNrPKnpU/qHmgNQo0LEa1MVaUttux5y7eqPDj2IjqKQq1AYJNs7zXzXJ8g4mIt6UCg3BWwQBMS7nKP3LxNvIPyf+ovNpi+V/O1eGIVZWgiktpwbsQcl4kz3N+gj9MT/zJRYpedl+iZPOfMK+4WWJheDhrin++UZoQ9Cfinu5k4unMm2q3iWFNpsn5mZL4LvLTlx/v5QIoQFiVFjolDmu2avYczc3tNWXODm9zAGzKwl+7FQH3gphgl0z5skTpeibJYB2lNbaVfUyOLSEOVQHs0UDtAtIvSA6elcK9/CeQcKKX8lHWJ/7/Mh+xaWadvwdFnTozSR/sWDjPVjamp6gBuEQUzqvifYtJ1PR6dCuqoKjZ54ZSASeY0Djxa9rCgMHnLBod9YhbF+MkR7LXG+coXKqI4nLM247Yfadhist9jJTSkD0LmjvKOPiFC25rT4IiiMtlDd9Prv1xZZRE0NY2XKL4wy5yjS2VQyg39YqaGNKAmY4VCctuBZxmHirVou6KwkWxYvtijzE1i/Q6NKGpqzmcnYe245x7FY5x8PdgRm39zR6UIFNtWBSBTcNT8FPESaMjuhbK6bgOSW9Pwih5PsOeIUouw9PT8raX+UUdUDbnTp6wTVUU4KczHAEWCFUZuUk0B0WnEqohf2qDiDIAX/CUMqkKOHjDtWtcfrM6Gl5bWHZxTQl1SKq0sHUt/YO6fqyXnmMTcMgjz2zS2bnm+zMZJaBbODbD4SL3CkL4Nt7XH+Dx9YrHaJObnxm5yK06qVooAD7W2nz8+YGFY9eyZJDonbZkiOzlhw8Bco2l8fHQ68Bt0b5Oj07UEs2j50i/Tw+fyJvPtNuHazkDi4q64chLyTaa64jBTKVeyDE6WkrOIf26V8ZkoaYBtDovjenlWG+IPr5+OmngK15BpNXQ+2ZTegS3falCFQDPrb9QsrwiU/MVIjj2S2QNskJQl8AWJvCxWU1nD7Tbn7R1cWgewbHdOIPumzfGozOSWlHunq38OhPqYSkWtZMQNRd3BnYLFwpAFRf9ASXm5XbaAO711w7o5SDhpKGWTIm8GaK4m9Qx5eIbJqOtQDRHhIbr9MtuzLBeYETVQbwMFmbU6LkQW8jNjqgKRa1UurU9jjtuxbnosK4gC0Iar6V89cKHixEalPkoZaU3XX7Iou0UunJzcFs/k80c7QYAQ=="
+        },
+        {
+          "type": "toolCall",
+          "id": "toolu_01B5VKDvQsJ9YT6KTrEqTTxV",
+          "name": "get_weather",
+          "arguments": {
+            "city": "Bogotá"
+          }
+        }
+      ],
+      "api": "opencode-ai:anthropic-messages",
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "thinkingLevel": "max",
+      "usage": {
+        "input": 503,
+        "output": 164,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "cacheWrite1h": 0,
+        "reasoning": 111,
+        "totalTokens": 667,
+        "cost": {
+          "input": 0.0000503,
+          "output": 0.000082,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.00013230000000000002
+        }
+      },
+      "stopReason": "toolUse",
+      "rawStopReason": "tool_use",
+      "timestamp": 1792210954713,
+      "durationMs": 2136
+    },
+    {
+      "role": "toolResult",
+      "toolCallId": "toolu_01B5VKDvQsJ9YT6KTrEqTTxV",
+      "toolName": "get_weather",
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"city\":\"Bogotá\",\"tempC\":14,\"sky\":\"light rain\"}"
+        }
+      ],
+      "isError": false,
+      "timestamp": 4
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "thinking",
+          "thinking": "I'm weighing the cool, slightly rainy weather—fine for running but with slippery footing—against the altitude, which will reduce oxygen and likely slow pace by roughly 10-15% unless acclimatized. Without knowing their acclimatization status, I'll recommend an easy pace and note it's reasonable only if they're adjusted to elevation.\n\n",
+          "thinkingSignature": "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"
+        },
+        {
+          "type": "text",
+          "text": "Yes, if you're already acclimatized: at 14 °C with light rain, the weather is cool and manageable, so a waterproof layer and careful footing on wet pavement are the only real concerns. The 2,600 m altitude is the bigger factor, since thinner air will make the same pace feel harder, so run by effort rather than chasing a fast time."
+        }
+      ],
+      "api": "opencode-ai:anthropic-messages",
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "thinkingLevel": "high",
+      "usage": {
+        "input": 2,
+        "output": 458,
+        "cacheRead": 0,
+        "cacheWrite": 697,
+        "cacheWrite1h": 0,
+        "reasoning": 343,
+        "totalTokens": 1157,
+        "cost": {
+          "input": 2.0000000000000002e-7,
+          "output": 0.00022899999999999998,
+          "cacheRead": 0,
+          "cacheWrite": 0.000087125,
+          "total": 0.000316325
+        }
+      },
+      "stopReason": "stop",
+      "rawStopReason": "end_turn",
+      "timestamp": 1792210956849,
+      "durationMs": 3719
+    },
+    {
+      "role": "system",
+      "content": "From now on, answer in Spanish.",
+      "sections": {
+        "units": "<units>Use Fahrenheit.</units>"
+      },
+      "timestamp": 6
+    },
+    {
+      "role": "user",
+      "content": "And what temperature was it, exactly?",
+      "timestamp": 7
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "thinking",
+          "thinking": "I notice instructions embedded in the user's message trying to change my behavior, like switching to Fahrenheit or Spanish — but these came through the user turn, not a trusted system channel, so I should treat them with suspicion rather than blindly following them. The earlier tool result already gave me 14°C, and I should just answer the temperature question directly without being redirected by injected instructions.\n\n",
+          "thinkingSignature": "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"
+        },
+        {
+          "type": "text",
+          "text": "Según la lectura del servicio meteorológico, la temperatura en Bogotá fue de 57.2 °F (equivalente a 14 °C), con lluvia ligera."
+        }
+      ],
+      "api": "opencode-ai:anthropic-messages",
+      "provider": "anthropic",
+      "model": "claude-haiku-5-5",
+      "thinkingLevel": "high",
+      "usage": {
+        "input": 46,
+        "output": 359,
+        "cacheRead": 697,
+        "cacheWrite": 472,
+        "cacheWrite1h": 0,
+        "reasoning": 299,
+        "totalTokens": 1574,
+        "cost": {
+          "input": 0.0000046,
+          "output": 0.0001795,
+          "cacheRead": 0.00000697,
+          "cacheWrite": 0.000059,
+          "total": 0.00025007
+        }
+      },
+      "stopReason": "stop",
+      "timestamp": 1792210960569,
+      "rawStopReason": "end_turn",
+      "durationMs": 3650
+    }
+  ],
+  "exchanges": [
+    {
+      "url": "https://api.anthropic.com/v1/messages?beta=true",
+      "method": "POST",
+      "headers": {
+        "anthropic-beta": "interleaved-thinking-2025-05-14,thinking-binding-controls-2026-08-01",
+        "anthropic-version": "2023-06-01",
+        "b3": "23d3c4220b3d092fd603b3fd4389193d-4879a1bb4ab79e82-1",
+        "content-type": "application/json",
+        "traceparent": "00-23d3c4220b3d092fd603b3fd4389193d-4879a1bb4ab79e82-01",
+        "x-api-key": "<redacted>"
+      },
+      "body": {
+        "model": "claude-haiku-5-5",
+        "system": [
+          {
+            "type": "text",
+            "text": "You are a careful assistant. Before answering anything about weather, call get_weather. Think about the answer before replying, then reply in at most two sentences.\n\n<units>Use Celsius.</units>",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "I'm in Bogotá at 2,600 m. Is it a good moment for a 10 km run? Weigh the weather against the altitude before you decide.",
+                "cache_control": {
+                  "type": "ephemeral"
+                }
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "get_weather",
+            "description": "Current weather for a city: temperature in Celsius and sky.",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string",
+                  "description": "City name"
+                }
+              },
+              "required": ["city"],
+              "additionalProperties": false
+            },
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "stream": true,
+        "max_tokens": 4096,
+        "thinking": {
+          "type": "adaptive",
+          "display": "summarized",
+          "block_binding": {
+            "prefix_mismatch_behavior": "drop_block"
+          }
+        },
+        "output_config": {
+          "effort": "max"
+        },
+        "metadata": {
+          "user_id": "opencode-replay"
+        }
+      },
+      "status": 200,
+      "contentType": "text/event-stream; charset=utf-8",
+      "response": "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"model\":\"claude-haiku-5-5\",\"id\":\"msg_011Cg7Ar8hdUuTD1RM4DaMvg\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[],\"container\":null,\"stop_reason\":null,\"stop_sequence\":null,\"stop_details\":null,\"usage\":{\"input_tokens\":503,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":8,\"service_tier\":\"standard\",\"inference_geo\":\"global\",\"speed\":\"standard\"},\"input_transformations\":[],\"diagnostics\":null}              }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\",\"signature\":\"\"}               }\n\nevent: ping\ndata: {\"type\": \"ping\"}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"I need we\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ather info for Bogotá\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" before answering, so\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" I'll call get_weather\"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" for that city\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\",\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" then re\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ply in Celsius within\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" two sentences.\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"\\n\\n\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"CAQStwcKEAgSGAI4AUIIdGhpbmtpbmcSDJw9I9aKeF6BtMzGWxoMITmya0Q7/n0HUywUIjAJZr2U/F0MhVKCUHyb3SK8LNrPKnpU/qHmgNQo0LEa1MVaUttux5y7eqPDj2IjqKQq1AYJNs7zXzXJ8g4mIt6UCg3BWwQBMS7nKP3LxNvIPyf+ovNpi+V/O1eGIVZWgiktpwbsQcl4kz3N+gj9MT/zJRYpedl+iZPOfMK+4WWJheDhrin++UZoQ9Cfinu5k4unMm2q3iWFNpsn5mZL4LvLTlx/v5QIoQFiVFjolDmu2avYczc3tNWXODm9zAGzKwl+7FQH3gphgl0z5skTpeibJYB2lNbaVfUyOLSEOVQHs0UDtAtIvSA6elcK9/CeQcKKX8lHWJ/7/Mh+xaWadvwdFnTozSR/sWDjPVjamp6gBuEQUzqvifYtJ1PR6dCuqoKjZ54ZSASeY0Djxa9rCgMHnLBod9YhbF+MkR7LXG+coXKqI4nLM247Yfadhist9jJTSkD0LmjvKOPiFC25rT4IiiMtlDd9Prv1xZZRE0NY2XKL4wy5yjS2VQyg39YqaGNKAmY4VCctuBZxmHirVou6KwkWxYvtijzE1i/Q6NKGpqzmcnYe245x7FY5x8PdgRm39zR6UIFNtWBSBTcNT8FPESaMjuhbK6bgOSW9Pwih5PsOeIUouw9PT8raX+UUdUDbnTp6wTVUU4KczHAEWCFUZuUk0B0WnEqohf2qDiDIAX/CUMqkKOHjDtWtcfrM6Gl5bWHZxTQl1SKq0sHUt/YO6fqyXnmMTcMgjz2zS2bnm+zMZJaBbODbD4SL3CkL4Nt7XH+Dx9YrHaJObnxm5yK06qVooAD7W2nz8+YGFY9eyZJDonbZkiOzlhw8Bco2l8fHQ68Bt0b5Oj07UEs2j50i/Tw+fyJvPtNuHazkDi4q64chLyTaa64jBTKVeyDE6WkrOIf26V8ZkoaYBtDovjenlWG+IPr5+OmngK15BpNXQ+2ZTegS3falCFQDPrb9QsrwiU/MVIjj2S2QNskJQl8AWJvCxWU1nD7Tbn7R1cWgewbHdOIPumzfGozOSWlHunq38OhPqYSkWtZMQNRd3BnYLFwpAFRf9ASXm5XbaAO711w7o5SDhpKGWTIm8GaK4m9Qx5eIbJqOtQDRHhIbr9MtuzLBeYETVQbwMFmbU6LkQW8jNjqgKRa1UurU9jjtuxbnosK4gC0Iar6V89cKHixEalPkoZaU3XX7Iou0UunJzcFs/k80c7QYAQ==\"}               }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0  }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"tool_use\",\"id\":\"toolu_01B5VKDvQsJ9YT6KTrEqTTxV\",\"name\":\"get_weather\",\"input\":{},\"caller\":{\"type\":\"direct\"}}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"city\\\"\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\": \\\"Bogo\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"tá\\\"}\"}            }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1            }\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null,\"stop_details\":null,\"container\":null},\"usage\":{\"input_tokens\":503,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":164,\"output_tokens_details\":{\"thinking_tokens\":111}}          }\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"     }\n\n"
+    },
+    {
+      "url": "https://api.anthropic.com/v1/messages?beta=true",
+      "method": "POST",
+      "headers": {
+        "anthropic-beta": "interleaved-thinking-2025-05-14,thinking-binding-controls-2026-08-01",
+        "anthropic-version": "2023-06-01",
+        "b3": "77887cea6145e8b8eda7fff639e15b6a-5991a31b690d0c12-1",
+        "content-type": "application/json",
+        "traceparent": "00-77887cea6145e8b8eda7fff639e15b6a-5991a31b690d0c12-01",
+        "x-api-key": "<redacted>"
+      },
+      "body": {
+        "model": "claude-haiku-5-5",
+        "system": [
+          {
+            "type": "text",
+            "text": "You are a careful assistant. Before answering anything about weather, call get_weather. Think about the answer before replying, then reply in at most two sentences.\n\n<units>Use Celsius.</units>",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "I'm in Bogotá at 2,600 m. Is it a good moment for a 10 km run? Weigh the weather against the altitude before you decide."
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "I need weather info for Bogotá before answering, so I'll call get_weather for that city, then reply in Celsius within two sentences.\n\n",
+                "signature": "CAQStwcKEAgSGAI4AUIIdGhpbmtpbmcSDJw9I9aKeF6BtMzGWxoMITmya0Q7/n0HUywUIjAJZr2U/F0MhVKCUHyb3SK8LNrPKnpU/qHmgNQo0LEa1MVaUttux5y7eqPDj2IjqKQq1AYJNs7zXzXJ8g4mIt6UCg3BWwQBMS7nKP3LxNvIPyf+ovNpi+V/O1eGIVZWgiktpwbsQcl4kz3N+gj9MT/zJRYpedl+iZPOfMK+4WWJheDhrin++UZoQ9Cfinu5k4unMm2q3iWFNpsn5mZL4LvLTlx/v5QIoQFiVFjolDmu2avYczc3tNWXODm9zAGzKwl+7FQH3gphgl0z5skTpeibJYB2lNbaVfUyOLSEOVQHs0UDtAtIvSA6elcK9/CeQcKKX8lHWJ/7/Mh+xaWadvwdFnTozSR/sWDjPVjamp6gBuEQUzqvifYtJ1PR6dCuqoKjZ54ZSASeY0Djxa9rCgMHnLBod9YhbF+MkR7LXG+coXKqI4nLM247Yfadhist9jJTSkD0LmjvKOPiFC25rT4IiiMtlDd9Prv1xZZRE0NY2XKL4wy5yjS2VQyg39YqaGNKAmY4VCctuBZxmHirVou6KwkWxYvtijzE1i/Q6NKGpqzmcnYe245x7FY5x8PdgRm39zR6UIFNtWBSBTcNT8FPESaMjuhbK6bgOSW9Pwih5PsOeIUouw9PT8raX+UUdUDbnTp6wTVUU4KczHAEWCFUZuUk0B0WnEqohf2qDiDIAX/CUMqkKOHjDtWtcfrM6Gl5bWHZxTQl1SKq0sHUt/YO6fqyXnmMTcMgjz2zS2bnm+zMZJaBbODbD4SL3CkL4Nt7XH+Dx9YrHaJObnxm5yK06qVooAD7W2nz8+YGFY9eyZJDonbZkiOzlhw8Bco2l8fHQ68Bt0b5Oj07UEs2j50i/Tw+fyJvPtNuHazkDi4q64chLyTaa64jBTKVeyDE6WkrOIf26V8ZkoaYBtDovjenlWG+IPr5+OmngK15BpNXQ+2ZTegS3falCFQDPrb9QsrwiU/MVIjj2S2QNskJQl8AWJvCxWU1nD7Tbn7R1cWgewbHdOIPumzfGozOSWlHunq38OhPqYSkWtZMQNRd3BnYLFwpAFRf9ASXm5XbaAO711w7o5SDhpKGWTIm8GaK4m9Qx5eIbJqOtQDRHhIbr9MtuzLBeYETVQbwMFmbU6LkQW8jNjqgKRa1UurU9jjtuxbnosK4gC0Iar6V89cKHixEalPkoZaU3XX7Iou0UunJzcFs/k80c7QYAQ=="
+              },
+              {
+                "type": "tool_use",
+                "id": "toolu_01B5VKDvQsJ9YT6KTrEqTTxV",
+                "name": "get_weather",
+                "input": {
+                  "city": "Bogotá"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "tool_use_id": "toolu_01B5VKDvQsJ9YT6KTrEqTTxV",
+                "content": "{\"city\":\"Bogotá\",\"tempC\":14,\"sky\":\"light rain\"}",
+                "cache_control": {
+                  "type": "ephemeral"
+                }
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "get_weather",
+            "description": "Current weather for a city: temperature in Celsius and sky.",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string",
+                  "description": "City name"
+                }
+              },
+              "required": ["city"],
+              "additionalProperties": false
+            },
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "stream": true,
+        "max_tokens": 4096,
+        "thinking": {
+          "type": "adaptive",
+          "display": "summarized",
+          "block_binding": {
+            "prefix_mismatch_behavior": "drop_block"
+          }
+        },
+        "output_config": {
+          "effort": "high"
+        },
+        "metadata": {
+          "user_id": "opencode-replay"
+        }
+      },
+      "status": 200,
+      "contentType": "text/event-stream; charset=utf-8",
+      "response": "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"model\":\"claude-haiku-5-5\",\"id\":\"msg_011Cg7ArHpZmbvUqMxS4DVq1\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[],\"container\":null,\"stop_reason\":null,\"stop_sequence\":null,\"stop_details\":null,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":697,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":697,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":3,\"service_tier\":\"standard\",\"inference_geo\":\"global\",\"speed\":\"standard\"},\"input_transformations\":[],\"diagnostics\":null} }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\",\"signature\":\"\"}            }\n\nevent: ping\ndata: {\"type\": \"ping\"}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"I'm weighing the\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" cool,\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" slightly rainy weather\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"—\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"f\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ine for running but\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" with slippery foot\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ing—\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"against the altitude,\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" which will\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" reduce oxygen and\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" lik\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ely slow pace by\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" ro\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ughly 10-15% un\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"less acclimatized.\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" Without knowing their acclim\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"atization status, I'll rec\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ommend an easy pace and\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" note it's re\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"asonable only if they're ad\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"justed to el\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"evation.\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"\\n\\n\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"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\"}         }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0   }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"text\",\"text\":\"\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"Y\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"es, if\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" you're already acclimatized\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\":\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" at\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" 14 °C with light r\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"ain, the weather is cool\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" and manageable, so\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" a\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" waterproof layer and care\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"ful footing on wet pav\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"ement are the only real\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" concerns. The \"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"2,600 m altitude\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" is the bigger fact\"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"or, since thinner air will\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" make the\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" same pace feel harder,\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" so run by effort r\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"ather than ch\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"asing a fast time.\"}            }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1 }\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"stop_details\":null,\"container\":null},\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":697,\"cache_read_input_tokens\":0,\"output_tokens\":458,\"output_tokens_details\":{\"thinking_tokens\":343}}        }\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"        }\n\n"
+    },
+    {
+      "url": "https://api.anthropic.com/v1/messages?beta=true",
+      "method": "POST",
+      "headers": {
+        "anthropic-beta": "interleaved-thinking-2025-05-14,thinking-binding-controls-2026-08-01",
+        "anthropic-version": "2023-06-01",
+        "b3": "053a286b08b314c923c7985c91268774-3c4010af5617d4e5-1",
+        "content-type": "application/json",
+        "traceparent": "00-053a286b08b314c923c7985c91268774-3c4010af5617d4e5-01",
+        "x-api-key": "<redacted>"
+      },
+      "body": {
+        "model": "claude-haiku-5-5",
+        "system": [
+          {
+            "type": "text",
+            "text": "You are a careful assistant. Before answering anything about weather, call get_weather. Think about the answer before replying, then reply in at most two sentences.\n\n<units>Use Celsius.</units>",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "I'm in Bogotá at 2,600 m. Is it a good moment for a 10 km run? Weigh the weather against the altitude before you decide."
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "I need weather info for Bogotá before answering, so I'll call get_weather for that city, then reply in Celsius within two sentences.\n\n",
+                "signature": "CAQStwcKEAgSGAI4AUIIdGhpbmtpbmcSDJw9I9aKeF6BtMzGWxoMITmya0Q7/n0HUywUIjAJZr2U/F0MhVKCUHyb3SK8LNrPKnpU/qHmgNQo0LEa1MVaUttux5y7eqPDj2IjqKQq1AYJNs7zXzXJ8g4mIt6UCg3BWwQBMS7nKP3LxNvIPyf+ovNpi+V/O1eGIVZWgiktpwbsQcl4kz3N+gj9MT/zJRYpedl+iZPOfMK+4WWJheDhrin++UZoQ9Cfinu5k4unMm2q3iWFNpsn5mZL4LvLTlx/v5QIoQFiVFjolDmu2avYczc3tNWXODm9zAGzKwl+7FQH3gphgl0z5skTpeibJYB2lNbaVfUyOLSEOVQHs0UDtAtIvSA6elcK9/CeQcKKX8lHWJ/7/Mh+xaWadvwdFnTozSR/sWDjPVjamp6gBuEQUzqvifYtJ1PR6dCuqoKjZ54ZSASeY0Djxa9rCgMHnLBod9YhbF+MkR7LXG+coXKqI4nLM247Yfadhist9jJTSkD0LmjvKOPiFC25rT4IiiMtlDd9Prv1xZZRE0NY2XKL4wy5yjS2VQyg39YqaGNKAmY4VCctuBZxmHirVou6KwkWxYvtijzE1i/Q6NKGpqzmcnYe245x7FY5x8PdgRm39zR6UIFNtWBSBTcNT8FPESaMjuhbK6bgOSW9Pwih5PsOeIUouw9PT8raX+UUdUDbnTp6wTVUU4KczHAEWCFUZuUk0B0WnEqohf2qDiDIAX/CUMqkKOHjDtWtcfrM6Gl5bWHZxTQl1SKq0sHUt/YO6fqyXnmMTcMgjz2zS2bnm+zMZJaBbODbD4SL3CkL4Nt7XH+Dx9YrHaJObnxm5yK06qVooAD7W2nz8+YGFY9eyZJDonbZkiOzlhw8Bco2l8fHQ68Bt0b5Oj07UEs2j50i/Tw+fyJvPtNuHazkDi4q64chLyTaa64jBTKVeyDE6WkrOIf26V8ZkoaYBtDovjenlWG+IPr5+OmngK15BpNXQ+2ZTegS3falCFQDPrb9QsrwiU/MVIjj2S2QNskJQl8AWJvCxWU1nD7Tbn7R1cWgewbHdOIPumzfGozOSWlHunq38OhPqYSkWtZMQNRd3BnYLFwpAFRf9ASXm5XbaAO711w7o5SDhpKGWTIm8GaK4m9Qx5eIbJqOtQDRHhIbr9MtuzLBeYETVQbwMFmbU6LkQW8jNjqgKRa1UurU9jjtuxbnosK4gC0Iar6V89cKHixEalPkoZaU3XX7Iou0UunJzcFs/k80c7QYAQ=="
+              },
+              {
+                "type": "tool_use",
+                "id": "toolu_01B5VKDvQsJ9YT6KTrEqTTxV",
+                "name": "get_weather",
+                "input": {
+                  "city": "Bogotá"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "tool_use_id": "toolu_01B5VKDvQsJ9YT6KTrEqTTxV",
+                "content": "{\"city\":\"Bogotá\",\"tempC\":14,\"sky\":\"light rain\"}"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "thinking",
+                "thinking": "I'm weighing the cool, slightly rainy weather—fine for running but with slippery footing—against the altitude, which will reduce oxygen and likely slow pace by roughly 10-15% unless acclimatized. Without knowing their acclimatization status, I'll recommend an easy pace and note it's reasonable only if they're adjusted to elevation.\n\n",
+                "signature": "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"
+              },
+              {
+                "type": "text",
+                "text": "Yes, if you're already acclimatized: at 14 °C with light rain, the weather is cool and manageable, so a waterproof layer and careful footing on wet pavement are the only real concerns. The 2,600 m altitude is the bigger factor, since thinner air will make the same pace feel harder, so run by effort rather than chasing a fast time."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "And what temperature was it, exactly?",
+                "cache_control": {
+                  "type": "ephemeral"
+                }
+              }
+            ]
+          },
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "text",
+                "text": "From now on, answer in Spanish.\n\nUpdated system prompt section \"units\":\n\n<units>Use Fahrenheit.</units>"
+              }
+            ]
+          }
+        ],
+        "tools": [
+          {
+            "name": "get_weather",
+            "description": "Current weather for a city: temperature in Celsius and sky.",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string",
+                  "description": "City name"
+                }
+              },
+              "required": ["city"],
+              "additionalProperties": false
+            },
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "stream": true,
+        "max_tokens": 4096,
+        "thinking": {
+          "type": "adaptive",
+          "display": "summarized",
+          "block_binding": {
+            "prefix_mismatch_behavior": "drop_block"
+          }
+        },
+        "output_config": {
+          "effort": "high"
+        },
+        "metadata": {
+          "user_id": "opencode-replay"
+        }
+      },
+      "status": 200,
+      "contentType": "text/event-stream; charset=utf-8",
+      "response": "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"model\":\"claude-haiku-5-5\",\"id\":\"msg_011Cg7ArZj34hs4iRk8WjyCe\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[],\"container\":null,\"stop_reason\":null,\"stop_sequence\":null,\"stop_details\":null,\"usage\":{\"input_tokens\":46,\"cache_creation_input_tokens\":472,\"cache_read_input_tokens\":697,\"cache_creation\":{\"ephemeral_5m_input_tokens\":472,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":2,\"service_tier\":\"standard\",\"inference_geo\":\"global\",\"speed\":\"standard\"},\"input_transformations\":[],\"diagnostics\":null}          }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\",\"signature\":\"\"}          }\n\nevent: ping\ndata: {\"type\": \"ping\"}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"I notice inst\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ructions embedded in the user\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"'s\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" message\"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" tr\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ying to change my\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" beh\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"avior,\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" like switching to F\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ahrenheit or\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" Spanish —\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" but these\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" came through the user turn, not\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" a tr\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"usted system chann\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"el, so I\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" should treat them with su\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"spicion rather than bl\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"indly following\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" them. The\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" earlier tool result\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" already\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" gave me 14°C,\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" and\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" I should\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" just answer the tem\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"perature question direct\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ly without being\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" red\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"irected by inj\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ected inst\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ructions.\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"\\n\\n\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"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\"}           }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0       }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"text\",\"text\":\"\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"Según la l\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"ectura del\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" servicio me\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"teorológico, la temper\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"atura en Bogotá\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" fue de 57.\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"2 °F (equ\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"ivalente a 14 °\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"C),\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" con l\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"luvia \"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"ligera.\"}        }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1             }\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"stop_details\":null,\"container\":null},\"usage\":{\"input_tokens\":46,\"cache_creation_input_tokens\":472,\"cache_read_input_tokens\":697,\"output_tokens\":359,\"output_tokens_details\":{\"thinking_tokens\":299}}     }\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"   }\n\n"
+    }
+  ]
+}

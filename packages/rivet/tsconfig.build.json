@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "composite": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "types": ["bun"]
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../durable/tsconfig.build.json" },
+    { "path": "../host/tsconfig.build.json" }
+  ]
+}

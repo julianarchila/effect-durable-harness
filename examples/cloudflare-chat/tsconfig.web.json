@@ -1,0 +1,29 @@
+// The browser app (`src/web`, minus the front-door Worker). It runs outside Effect, so the Effect diagnostics for
+// browser globals (dates, timers, random IDs, console) are off here; the rest match `tsconfig.base.json`.
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "plugins": [
+      {
+        "name": "@effect/language-service",
+        "namespaceImportPackages": ["effect"],
+        "diagnosticSeverity": {
+          "importFromBarrel": "error",
+          "preferSchemaOverJson": "error",
+          "globalDate": "off",
+          "globalTimers": "off",
+          "globalRandom": "off",
+          "globalConsole": "off",
+          "cryptoRandomUUID": "off"
+        }
+      }
+    ]
+  },
+  "include": ["src/web", "src/protocol.ts", "vite.config.ts"],
+  "exclude": ["src/web/worker.ts"]
+}

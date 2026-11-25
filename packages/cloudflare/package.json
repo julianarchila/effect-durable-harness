@@ -1,0 +1,79 @@
+{
+  "name": "@effect-durable-harness/cloudflare",
+  "version": "0.1.0",
+  "description": "Cloudflare Durable Object host of @effect-durable-harness/core: @effect-durable-harness/host bound to Cloudflare.DurableObjectState, through Alchemy.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/julianarchila/effect-durable-harness.git",
+    "directory": "packages/cloudflare"
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "src/**/*.ts"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./*": {
+      "types": "./src/*.ts",
+      "import": "./src/*.ts"
+    },
+    "./internal/*": null
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./*": {
+        "types": "./dist/*.d.ts",
+        "default": "./dist/*.js"
+      },
+      "./internal/*": null
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun run test:workerd",
+    "test:workerd": "vitest run --config vitest.workerd.config.ts",
+    "test:deployed": "ALCHEMY_TEST_DEV=0 vitest run --config vitest.workerd.config.ts",
+    "test:live": "vitest run --config vitest.live.config.ts"
+  },
+  "dependencies": {
+    "@effect-durable-harness/core": "workspace:*",
+    "@effect-durable-harness/delta": "workspace:*",
+    "@effect-durable-harness/host": "workspace:*"
+  },
+  "devDependencies": {
+    "@alchemy.run/cloudflare": "catalog:",
+    "@alchemy.run/domain": "catalog:",
+    "@alchemy.run/frontend-frameworks": "catalog:",
+    "@alchemy.run/test": "catalog:",
+    "@cloudflare/workers-types": "catalog:",
+    "@effect-durable-harness/opencode": "workspace:*",
+    "@effect/language-service": "catalog:",
+    "@effect/sql-sqlite-do": "catalog:",
+    "@effect/vitest": "catalog:",
+    "@opencode/ai": "catalog:",
+    "@types/bun": "catalog:",
+    "alchemy": "catalog:",
+    "effect": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "@alchemy.run/cloudflare": "2.0.0-beta.87",
+    "@effect/sql-sqlite-do": "^4.1.0",
+    "alchemy": "2.0.0-beta.87",
+    "effect": "^4.1.0"
+  }
+}

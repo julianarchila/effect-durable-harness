@@ -1,0 +1,44 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": [],
+    "api": "opencode-ai:anthropic-messages",
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "usage": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 0,
+      "cost": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0
+      }
+    },
+    "stopReason": "error",
+    "timestamp": 1792210908869,
+    "errorMessage": "prompt is too long: 4200057 tokens > 1000000 maximum",
+    "durationMs": 488
+  },
+  "exchanges": [
+    {
+      "url": "https://api.anthropic.com/v1/messages?beta=true",
+      "method": "POST",
+      "headers": {
+        "anthropic-beta": "interleaved-thinking-2025-05-14,thinking-binding-controls-2026-08-01",
+        "anthropic-version": "2023-06-01",
+        "b3": "1a2b61282d27e2f23b082c18e12d4fee-fba6ee431328ae13-1",
+        "content-type": "application/json",
+        "traceparent": "00-1a2b61282d27e2f23b082c18e12d4fee-fba6ee431328ae13-01",
+        "x-api-key": "<redacted>"
+      },
+      "status": 400,
+      "contentType": "application/json",
+      "response": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"prompt is too long: 4200057 tokens > 1000000 maximum\"},\"request_id\":\"req_011Cg7Ankamjf1ZuHBMSQbqz\"}"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "packages/delta/tsconfig.build.json"
+    },
+    {
+      "path": "packages/durable/tsconfig.build.json"
+    },
+    {
+      "path": "packages/host/tsconfig.build.json"
+    },
+    {
+      "path": "packages/opencode/tsconfig.build.json"
+    },
+    {
+      "path": "packages/cloudflare/tsconfig.build.json"
+    },
+    {
+      "path": "packages/rivet/tsconfig.build.json"
+    }
+  ]
+}
